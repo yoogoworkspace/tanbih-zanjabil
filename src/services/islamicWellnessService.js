@@ -34,7 +34,7 @@ export const islamicWellnessService = {
         ?.from('prayer_times')
         ?.insert([{ ...prayerData, user_id: userId }])
         ?.select()
-        ?.single();
+        ?.maybeSingle();
       
       if (error) {
         return { data: null, error: { message: error?.message } };
@@ -61,7 +61,7 @@ export const islamicWellnessService = {
         ?.update(updateData)
         ?.eq('id', prayerId)
         ?.select()
-        ?.single();
+        ?.maybeSingle();
       
       if (error) {
         return { data: null, error: { message: error?.message } };
@@ -107,7 +107,7 @@ export const islamicWellnessService = {
         ?.from('wellness_surveys')
         ?.insert([{ ...surveyData, user_id: userId }])
         ?.select()
-        ?.single();
+        ?.maybeSingle();
       
       if (error) {
         return { data: null, error: { message: error?.message } };
@@ -153,7 +153,7 @@ export const islamicWellnessService = {
         ?.from('spiritual_activities')
         ?.insert([{ ...activityData, user_id: userId }])
         ?.select()
-        ?.single();
+        ?.maybeSingle();
       
       if (error) {
         return { data: null, error: { message: error?.message } };
@@ -199,7 +199,7 @@ export const islamicWellnessService = {
         ?.from('halal_products')
         ?.insert([{ ...productData, user_id: userId }])
         ?.select()
-        ?.single();
+        ?.maybeSingle();
       
       if (error) {
         return { data: null, error: { message: error?.message } };
@@ -221,7 +221,7 @@ export const islamicWellnessService = {
         ?.update(updates)
         ?.eq('id', productId)
         ?.select()
-        ?.single();
+        ?.maybeSingle();
       
       if (error) {
         return { data: null, error: { message: error?.message } };
@@ -269,7 +269,7 @@ export const islamicWellnessService = {
         ?.update({ is_read: true })
         ?.eq('id', recommendationId)
         ?.select()
-        ?.single();
+        ?.maybeSingle();
       
       if (error) {
         return { data: null, error: { message: error?.message } };

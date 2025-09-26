@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import Button from './Button';
@@ -22,7 +22,8 @@ import {
 import Icon from '../AppIcon';
 
 
-const Header = ({ isMenuOpen, setIsMenuOpen }) => {
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut, userProfile, loading } = useAuth();

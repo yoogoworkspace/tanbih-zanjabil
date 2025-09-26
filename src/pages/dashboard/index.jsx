@@ -3,10 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Header from '../../components/ui/Header';
 import AICompanionCard from './components/AICompanionCard';
-import PrayerTimesCard from './components/PrayerTimesCard';
 import HalalCheckerCard from './components/HalalCheckerCard';
 import WellnessSurveyCard from './components/WellnessSurveyCard';
-import IslamicContentPanel from './components/IslamicContentPanel';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import { useAuth } from '../../contexts/AuthContext';
@@ -175,25 +173,20 @@ const Dashboard = () => {
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-              {/* Primary Features Column */}
-              <div className="xl:col-span-2 space-y-8">
-                {/* AI Companion & Prayer Times Row */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <AICompanionCard />
-                  <PrayerTimesCard />
-                </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+              {/* AI Companion Card (takes up more space on larger screens) */}
+              <div className="lg:col-span-2 xl:col-span-2">
+                <AICompanionCard />
+              </div>
 
-                {/* Halal Checker */}
-                <HalalCheckerCard />
-
-                {/* Wellness Survey Full Width */}
+              {/* Wellness Survey Card */}
+              <div className="lg:col-span-1 xl:col-span-1">
                 <WellnessSurveyCard />
               </div>
 
-              {/* Islamic Content Panel */}
-              <div className="xl:col-span-1">
-                <IslamicContentPanel />
+              {/* Halal Checker Card (Full Width on Mobile, half on others) */}
+              <div className="lg:col-span-2 xl:col-span-3">
+                <HalalCheckerCard />
               </div>
             </div>
           </div>

@@ -42,14 +42,13 @@ const AISheikh = () => {
       const response = await axios.post(
         'https://openrouter.ai/api/v1/chat/completions',
         {
-          model: 'openai/gpt-oss-120b:free',
+          model: 'openrouter/cinematika-7b:free',
           messages: [...messages, userMessage],
         },
         {
           headers: {
             'Authorization': `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`,
             'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://islamicwellness.com',
           },
         }
       );
