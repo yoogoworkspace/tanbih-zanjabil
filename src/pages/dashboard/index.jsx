@@ -119,37 +119,6 @@ const Dashboard = () => {
     });
   };
 
-  const quickActions = [
-    {
-      id: 1,
-      name: 'Emergency Dua',
-      icon: 'Heart',
-      color: 'bg-error text-error-foreground',
-      action: () => navigate('/ai-sheikh')
-    },
-    {
-      id: 2,
-      name: 'Qibla Direction',
-      icon: 'Compass',
-      color: 'bg-primary text-primary-foreground',
-      action: () => console.log('Show qibla direction')
-    },
-    {
-      id: 3,
-      name: 'Quick Scan',
-      icon: 'Camera',
-      color: 'bg-success text-success-foreground',
-      action: () => navigate('/halal-checker')
-    },
-    {
-      id: 4,
-      name: 'Dhikr Counter',
-      icon: 'Repeat',
-      color: 'bg-accent text-accent-foreground',
-      action: () => navigate('/dhikr-counter')
-    }
-  ];
-
   return (
     <>
       <Helmet>
@@ -157,9 +126,7 @@ const Dashboard = () => {
         <meta name="description" content="Your Islamic spiritual guidance dashboard with AI companion, prayer times, halal checker, and wellness insights." />
       </Helmet>
       <div className="min-h-screen bg-background">
-        <Header />
-        
-        <main className="pt-16 pb-20 lg:pb-8">
+        <main className="pb-20 lg:pb-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Welcome Section */}
             <div className="mb-8">
@@ -207,26 +174,6 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Quick Actions */}
-            <div className="mb-8">
-              <h2 className="font-heading text-xl font-semibold text-foreground mb-4">Quick Actions</h2>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                {quickActions?.map((action) => (
-                  <Button
-                    key={action?.id}
-                    variant="outline"
-                    onClick={action?.action}
-                    className="h-20 flex flex-col items-center justify-center space-y-2 hover:shadow-islamic-subtle transition-all duration-200 rounded-2xl"
-                  >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${action?.color}`}>
-                      <Icon name={action?.icon} size={20} />
-                    </div>
-                    <span className="text-sm font-medium">{action?.name}</span>
-                  </Button>
-                ))}
-              </div>
-            </div>
-
             {/* Main Content Grid */}
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
               {/* Primary Features Column */}
@@ -247,40 +194,6 @@ const Dashboard = () => {
               {/* Islamic Content Panel */}
               <div className="xl:col-span-1">
                 <IslamicContentPanel />
-              </div>
-            </div>
-
-            {/* Bottom Action Bar */}
-            <div className="mt-12 p-6 bg-card rounded-2xl shadow-islamic-moderate border border-border">
-              <div className="flex flex-col lg:flex-row items-center justify-between space-y-4 lg:space-y-0">
-                <div className="text-center lg:text-left">
-                  <h3 className="font-heading text-lg font-semibold text-foreground mb-1">
-                    Continue Your Spiritual Journey
-                  </h3>
-                  <p className="font-caption text-sm text-muted-foreground">
-                    Explore more features to enhance your Islamic lifestyle and well-being
-                  </p>
-                </div>
-                <div className="flex space-x-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate('/profile-settings')}
-                    iconName="Settings"
-                    iconPosition="left"
-                    className="rounded-xl"
-                  >
-                    Settings
-                  </Button>
-                  <Button
-                    variant="default"
-                    onClick={() => navigate('/')}
-                    iconName="Compass"
-                    iconPosition="left"
-                    className="rounded-xl"
-                  >
-                    Explore Features
-                  </Button>
-                </div>
               </div>
             </div>
           </div>

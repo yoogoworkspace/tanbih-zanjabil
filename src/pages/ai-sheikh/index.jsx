@@ -49,6 +49,7 @@ const AISheikh = () => {
           headers: {
             'Authorization': `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`,
             'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://islamicwellness.com',
           },
         }
       );
