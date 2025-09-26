@@ -14,7 +14,9 @@ import {
   Home,
   LogOut,
   User,
-  LogIn
+  LogIn,
+  ClipboardCheck,
+  Sparkles
 } from 'lucide-react';
 import Icon from '../AppIcon';
 
@@ -35,6 +37,8 @@ const Header = ({ isMenuOpen, setIsMenuOpen }) => {
 
   const navigationItems = [
     { path: '/dashboard', icon: Home, label: 'Dashboard' },
+    { path: '/ai-sheikh', icon: Sparkles, label: 'AI Sheikh' },
+    { path: '/deeds-tracking', icon: ClipboardCheck, label: 'Deeds' },
     { path: '/prayer-times-scheduler', icon: Calendar, label: 'Prayer Times' },
     { path: '/halal-checker', icon: Search, label: 'Halal Checker' },
     { path: '/wellness-survey', icon: Heart, label: 'Wellness' },

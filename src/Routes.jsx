@@ -12,6 +12,8 @@ import Dashboard from './pages/dashboard';
 import WellnessSurvey from './pages/wellness-survey';
 import ARSalahGuide from './pages/ar-salah-guide';
 import ProfileSettings from './pages/profile-settings';
+import DeedsTracking from './pages/deeds-tracking';
+import AISheikh from './pages/ai-sheikh';
 import ProtectedRoute from "components/ProtectedRoute";
 
 const Routes = () => {
@@ -33,6 +35,8 @@ const Routes = () => {
           <Route path="/wellness-survey" element={<ProtectedRoute><WellnessSurvey /></ProtectedRoute>} />
           <Route path="/ar-salah-guide" element={<ProtectedRoute><ARSalahGuide /></ProtectedRoute>} />
           <Route path="/profile-settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
+          <Route path="/deeds-tracking" element={<ProtectedRoute><DeedsTracking /></ProtectedRoute>} />
+          <Route path="/ai-sheikh" element={<ProtectedRoute><AISheikh /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </RouterRoutes>
         </ErrorBoundary>

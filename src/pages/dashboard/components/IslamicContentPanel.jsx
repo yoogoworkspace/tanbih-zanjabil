@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
-import { useAuth } from '../../../contexts/AuthContext';
-import { supabase } from '../../../lib/supabaseClient';
 
 const IslamicContentPanel = () => {
-  const { user } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [islamicDate, setIslamicDate] = useState('15 Rabi\' al-Awwal 1446');
   const [dailyVerse, setDailyVerse] = useState(null);
   const [featuredHadith, setFeaturedHadith] = useState(null);
-  const [dhikrReminders, setDhikrReminders] = useState([]);
+  const [loadingVerse, setLoadingVerse] = useState(true);
+  const [loadingHadith, setLoadingHadith] = useState(true);
 
   const islamicEvents = [
     {
@@ -37,30 +36,59 @@ const IslamicContentPanel = () => {
   ];
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentDate(new Date());
-    }, 60000); // Update every minute
+    const timer = setInterval(() => setCurrentDate(new Date()), 60000);
 
-    const fetchContent = async () => {
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from('ai_recommendations')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (data) {
-        setDailyVerse(data.find(item => item.category === 'spiritual'));
-        setFeaturedHadith(data.find(item => item.category === 'wellness'));
-        setDhikrReminders(data.filter(item => item.category === 'prayer').slice(0, 3));
+    const fetchRandomVerse = async () => {
+      setLoadingVerse(true);
+      try {
+        const verseNumber = Math.floor(Math.random() * 6236) + 1;
+        const response = await axios.get(`http://api.alquran.cloud/v1/ayah/${verseNumber}/editions/quran-uthmani,en.asad`);
+        const verseData = response.data.data;
+        setDailyVerse({
+          arabic: verseData[0].text,
+          translation: verseData[1].text,
+          reference: `Quran ${verseData[1].surah.englishName} ${verseData[1].surah.number}:${verseData[1].numberInSurah}`,
+        });
+      } catch (error) {
+        console.error("Error fetching random verse:", error);
+      } finally {
+        setLoadingVerse(false);
       }
     };
 
-    fetchContent();
+    const fetchRandomHadith = async () => {
+      setLoadingHadith(true);
+      try {
+        const apiKey = import.meta.env.VITE_HADITH_API_KEY;
+        const booksResponse = await axios.get(`https://hadithapi.com/api/books?apiKey=${apiKey}`);
+        const books = booksResponse.data.books;
+        const randomBook = books[Math.floor(Math.random() * books.length)];
+
+        const chaptersResponse = await axios.get(`https://hadithapi.com/api/chapters/${randomBook.bookSlug}?apiKey=${apiKey}`);
+        const chapters = chaptersResponse.data.chapters;
+        const randomChapter = chapters[Math.floor(Math.random() * chapters.length)];
+
+        const hadithsResponse = await axios.get(`https://hadithapi.com/api/hadiths?apiKey=${apiKey}&book=${randomBook.bookSlug}&chapter=${randomChapter.chapterNumber}`);
+        const hadiths = hadithsResponse.data.hadiths;
+        const randomHadith = hadiths[Math.floor(Math.random() * hadiths.length)];
+
+        setFeaturedHadith({
+          text: randomHadith.hadithEnglish,
+          narrator: randomHadith.englishNarrator,
+          reference: `${randomBook.bookName}, Hadith ${randomHadith.hadithNumber}`
+        });
+      } catch (error) {
+        console.error("Error fetching random hadith:", error);
+      } finally {
+        setLoadingHadith(false);
+      }
+    };
+
+    fetchRandomVerse();
+    fetchRandomHadith();
 
     return () => clearInterval(timer);
-  }, [user]);
+  }, []);
 
   const formatDate = (date) => {
     return date?.toLocaleDateString('en-US', {
@@ -117,27 +145,23 @@ const IslamicContentPanel = () => {
             <p className="font-caption text-sm text-muted-foreground">Qur'an Reflection</p>
           </div>
         </div>
-        
         <div className="space-y-4">
-          {dailyVerse ? (
+          {loadingVerse ? (
+            <div className="text-center py-4"><p className="text-sm text-muted-foreground">Fetching verse...</p></div>
+          ) : dailyVerse ? (
             <>
               <div className="p-4 bg-accent/5 rounded-lg border border-accent/10">
-                <p className="text-sm text-foreground mb-2">"{dailyVerse.content}"</p>
-                <p className="text-xs text-primary font-medium">{dailyVerse.title}</p>
+                <p className="font-heading text-lg text-right text-foreground mb-2" dir="rtl">{dailyVerse.arabic}</p>
+                <p className="text-sm text-foreground mb-2">"{dailyVerse.translation}"</p>
+                <p className="text-xs text-primary font-medium">{dailyVerse.reference}</p>
               </div>
               <div className="flex space-x-2">
-                <Button variant="ghost" size="sm" iconName="Share" iconPosition="left">
-                  Share
-                </Button>
-                <Button variant="ghost" size="sm" iconName="Bookmark" iconPosition="left">
-                  Save
-                </Button>
+                <Button variant="ghost" size="sm" iconName="Share" iconPosition="left">Share</Button>
+                <Button variant="ghost" size="sm" iconName="Bookmark" iconPosition="left">Save</Button>
               </div>
             </>
           ) : (
-            <div className="text-center py-4">
-              <p className="text-sm text-muted-foreground">No verse available today.</p>
-            </div>
+            <div className="text-center py-4"><p className="text-sm text-muted-foreground">Could not load verse.</p></div>
           )}
         </div>
       </div>
@@ -152,52 +176,21 @@ const IslamicContentPanel = () => {
             <p className="font-caption text-sm text-muted-foreground">Prophetic Guidance</p>
           </div>
         </div>
-        
         <div className="space-y-4">
-          {featuredHadith ? (
+          {loadingHadith ? (
+            <div className="text-center py-4"><p className="text-sm text-muted-foreground">Fetching hadith...</p></div>
+          ) : featuredHadith ? (
             <div className="p-4 bg-secondary/5 rounded-lg border border-secondary/10">
-              <p className="text-sm text-foreground mb-2">"{featuredHadith.content}"</p>
-              <p className="text-xs text-secondary font-medium">{featuredHadith.title}</p>
-            </div>
-          ) : (
-            <div className="text-center py-4">
-              <p className="text-sm text-muted-foreground">No hadith available today.</p>
-            </div>
-          )}
-        </div>
-      </div>
-      {/* Dhikr Reminders */}
-      <div className="bg-card rounded-xl p-6 shadow-islamic-moderate border border-border">
-        <div className="flex items-center space-x-3 mb-4">
-          <div className="w-10 h-10 bg-success rounded-lg flex items-center justify-center">
-            <Icon name="Repeat" size={20} className="text-success-foreground" />
-          </div>
-          <div>
-            <h3 className="font-heading font-semibold text-lg text-foreground">Dhikr Reminders</h3>
-            <p className="font-caption text-sm text-muted-foreground">Daily Remembrance</p>
-          </div>
-        </div>
-        
-        <div className="space-y-3">
-          {dhikrReminders.length > 0 ? (
-            dhikrReminders.map((dhikr) => (
-              <div key={dhikr.id} className="flex items-center justify-between p-3 bg-success/5 rounded-lg border border-success/10">
-                <div>
-                  <p className="font-medium text-sm text-foreground">{dhikr.title}</p>
-                  <p className="text-xs text-muted-foreground">{dhikr.content}</p>
-                </div>
+              <p className="text-sm text-foreground mb-2">"{featuredHadith.text}"</p>
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-secondary font-medium">{featuredHadith.reference}</p>
+                <p className="text-xs text-muted-foreground">Narrated by {featuredHadith.narrator}</p>
               </div>
-            ))
-          ) : (
-            <div className="text-center py-4">
-              <p className="text-sm text-muted-foreground">No dhikr reminders available.</p>
             </div>
+          ) : (
+            <div className="text-center py-4"><p className="text-sm text-muted-foreground">Could not load hadith.</p></div>
           )}
         </div>
-        
-        <Button variant="outline" className="w-full mt-4" iconName="Play" iconPosition="left">
-          Start Dhikr Session
-        </Button>
       </div>
     </div>
   );
