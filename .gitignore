@@ -1,8 +1,29 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+vite_output.log
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build artifacts
+dist
+build
+.svelte-kit
+.vercel
+
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Misc
 .DS_Store
-node_modules
-.idea
-package-lock.json
-/build
-.vscode/
-.idea/
-vite.config.*s.*
+jules-scratch/

@@ -77,6 +77,23 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const signUp = async (email, password, fullName) => {
+    try {
+      const { data, error } = await supabase?.auth?.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+          }
+        }
+      });
+      return { data, error };
+    } catch (error) {
+      return { error: { message: 'Network error. Please try again.' } }
+    }
+  };
+
   const signOut = async () => {
     try {
       const { error } = await supabase?.auth?.signOut()
@@ -108,6 +125,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     profileLoading,
     signIn,
+    signUp,
     signOut,
     updateProfile,
     isAuthenticated: !!user

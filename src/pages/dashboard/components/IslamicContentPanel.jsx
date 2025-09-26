@@ -1,27 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
+import { useAuth } from '../../../contexts/AuthContext';
+import { supabase } from '../../../lib/supabaseClient';
 
 const IslamicContentPanel = () => {
+  const { user } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [islamicDate] = useState('15 Rabi\' al-Awwal 1446');
-  
-  const dailyVerse = {
-    arabic: "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا",
-    transliteration: "Wa man yattaqi Allaha yaj\'al lahu makhrajan",
-    translation: "And whoever fears Allah - He will make for him a way out",
-    reference: "Quran 65:2",
-    context: "This verse reminds us that Allah provides solutions for those who are mindful of Him."
-  };
-
-  const featuredHadith = {
-    arabic: "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
-    transliteration: "Innama al-a\'malu bin-niyyat",
-    translation: "Actions are but by intention",
-    reference: "Sahih al-Bukhari 1",
-    narrator: "Umar ibn al-Khattab (RA)",
-    context: "The importance of sincere intention in all our deeds and worship."
-  };
+  const [islamicDate, setIslamicDate] = useState('15 Rabi\' al-Awwal 1446');
+  const [dailyVerse, setDailyVerse] = useState(null);
+  const [featuredHadith, setFeaturedHadith] = useState(null);
+  const [dhikrReminders, setDhikrReminders] = useState([]);
 
   const islamicEvents = [
     {
@@ -47,36 +36,31 @@ const IslamicContentPanel = () => {
     }
   ];
 
-  const dhikrReminders = [
-    {
-      id: 1,
-      dhikr: "SubhanAllah",
-      count: 33,
-      time: "After each prayer",
-      benefit: "Glorification of Allah"
-    },
-    {
-      id: 2,
-      dhikr: "Alhamdulillah",
-      count: 33,
-      time: "After each prayer",
-      benefit: "Praise and gratitude to Allah"
-    },
-    {
-      id: 3,
-      dhikr: "Allahu Akbar",
-      count: 34,
-      time: "After each prayer",
-      benefit: "Acknowledgment of Allah\'s greatness"
-    }
-  ];
-
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentDate(new Date());
     }, 60000); // Update every minute
+
+    const fetchContent = async () => {
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('ai_recommendations')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (data) {
+        setDailyVerse(data.find(item => item.category === 'spiritual'));
+        setFeaturedHadith(data.find(item => item.category === 'wellness'));
+        setDhikrReminders(data.filter(item => item.category === 'prayer').slice(0, 3));
+      }
+    };
+
+    fetchContent();
+
     return () => clearInterval(timer);
-  }, []);
+  }, [user]);
 
   const formatDate = (date) => {
     return date?.toLocaleDateString('en-US', {
@@ -135,29 +119,26 @@ const IslamicContentPanel = () => {
         </div>
         
         <div className="space-y-4">
-          <div className="p-4 bg-accent/5 rounded-lg border border-accent/10">
-            <p className="font-heading text-lg text-right text-foreground mb-2" dir="rtl">
-              {dailyVerse?.arabic}
-            </p>
-            <p className="font-caption text-sm text-muted-foreground italic mb-2">
-              {dailyVerse?.transliteration}
-            </p>
-            <p className="text-sm text-foreground mb-2">"{dailyVerse?.translation}"</p>
-            <p className="text-xs text-primary font-medium">{dailyVerse?.reference}</p>
-          </div>
-          
-          <div className="p-3 bg-muted/20 rounded-lg">
-            <p className="text-xs text-muted-foreground">{dailyVerse?.context}</p>
-          </div>
-          
-          <div className="flex space-x-2">
-            <Button variant="ghost" size="sm" iconName="Share" iconPosition="left">
-              Share
-            </Button>
-            <Button variant="ghost" size="sm" iconName="Bookmark" iconPosition="left">
-              Save
-            </Button>
-          </div>
+          {dailyVerse ? (
+            <>
+              <div className="p-4 bg-accent/5 rounded-lg border border-accent/10">
+                <p className="text-sm text-foreground mb-2">"{dailyVerse.content}"</p>
+                <p className="text-xs text-primary font-medium">{dailyVerse.title}</p>
+              </div>
+              <div className="flex space-x-2">
+                <Button variant="ghost" size="sm" iconName="Share" iconPosition="left">
+                  Share
+                </Button>
+                <Button variant="ghost" size="sm" iconName="Bookmark" iconPosition="left">
+                  Save
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-sm text-muted-foreground">No verse available today.</p>
+            </div>
+          )}
         </div>
       </div>
       {/* Featured Hadith */}
@@ -173,23 +154,16 @@ const IslamicContentPanel = () => {
         </div>
         
         <div className="space-y-4">
-          <div className="p-4 bg-secondary/5 rounded-lg border border-secondary/10">
-            <p className="font-heading text-lg text-right text-foreground mb-2" dir="rtl">
-              {featuredHadith?.arabic}
-            </p>
-            <p className="font-caption text-sm text-muted-foreground italic mb-2">
-              {featuredHadith?.transliteration}
-            </p>
-            <p className="text-sm text-foreground mb-2">"{featuredHadith?.translation}"</p>
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-secondary font-medium">{featuredHadith?.reference}</p>
-              <p className="text-xs text-muted-foreground">Narrated by {featuredHadith?.narrator}</p>
+          {featuredHadith ? (
+            <div className="p-4 bg-secondary/5 rounded-lg border border-secondary/10">
+              <p className="text-sm text-foreground mb-2">"{featuredHadith.content}"</p>
+              <p className="text-xs text-secondary font-medium">{featuredHadith.title}</p>
             </div>
-          </div>
-          
-          <div className="p-3 bg-muted/20 rounded-lg">
-            <p className="text-xs text-muted-foreground">{featuredHadith?.context}</p>
-          </div>
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-sm text-muted-foreground">No hadith available today.</p>
+            </div>
+          )}
         </div>
       </div>
       {/* Dhikr Reminders */}
@@ -205,18 +179,20 @@ const IslamicContentPanel = () => {
         </div>
         
         <div className="space-y-3">
-          {dhikrReminders?.map((dhikr) => (
-            <div key={dhikr?.id} className="flex items-center justify-between p-3 bg-success/5 rounded-lg border border-success/10">
-              <div>
-                <p className="font-medium text-sm text-foreground">{dhikr?.dhikr}</p>
-                <p className="text-xs text-muted-foreground">{dhikr?.benefit}</p>
+          {dhikrReminders.length > 0 ? (
+            dhikrReminders.map((dhikr) => (
+              <div key={dhikr.id} className="flex items-center justify-between p-3 bg-success/5 rounded-lg border border-success/10">
+                <div>
+                  <p className="font-medium text-sm text-foreground">{dhikr.title}</p>
+                  <p className="text-xs text-muted-foreground">{dhikr.content}</p>
+                </div>
               </div>
-              <div className="text-right">
-                <p className="font-data text-lg font-bold text-success">{dhikr?.count}x</p>
-                <p className="text-xs text-muted-foreground">{dhikr?.time}</p>
-              </div>
+            ))
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-sm text-muted-foreground">No dhikr reminders available.</p>
             </div>
-          ))}
+          )}
         </div>
         
         <Button variant="outline" className="w-full mt-4" iconName="Play" iconPosition="left">

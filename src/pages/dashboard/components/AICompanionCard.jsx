@@ -39,10 +39,10 @@ const AICompanionCard = () => {
   };
 
   return (
-    <div className="bg-card rounded-xl p-6 shadow-islamic-moderate border border-border">
+    <div className="bg-card rounded-2xl p-6 shadow-islamic-moderate border border-border">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
             <Icon name="MessageCircle" size={20} className="text-primary-foreground" />
           </div>
           <div>
@@ -70,7 +70,7 @@ const AICompanionCard = () => {
         {recentConversations?.map((conversation) => (
           <div
             key={conversation?.id}
-            className="flex items-start space-x-3 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors cursor-pointer"
+            className="flex items-start space-x-3 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors cursor-pointer"
             onClick={handleStartChat}
           >
             <div className={`w-2 h-2 rounded-full mt-2 ${
@@ -87,7 +87,7 @@ const AICompanionCard = () => {
       <div className="flex space-x-2">
         <Button
           variant="default"
-          className="flex-1"
+          className="flex-1 rounded-xl"
           onClick={handleStartChat}
           iconName="MessageSquare"
           iconPosition="left"
@@ -99,23 +99,24 @@ const AICompanionCard = () => {
           onClick={() => console.log('Emergency support')}
           iconName="Heart"
           iconPosition="left"
+          className="rounded-xl"
         >
           Emergency Support
         </Button>
       </div>
-      <div className="mt-4 p-3 bg-accent/10 rounded-lg border border-accent/20">
+      <div className="mt-4 p-3 bg-accent/10 rounded-xl border border-accent/20">
         <div className="flex items-center space-x-2 mb-2">
           <Icon name="Sparkles" size={16} className="text-accent" />
           <span className="font-medium text-sm text-foreground">Quick Actions</span>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="ghost" size="xs" onClick={() => console.log('Stress relief')}>
+          <Button variant="ghost" size="xs" onClick={() => console.log('Stress relief')} className="rounded-lg">
             Stress Relief Duas
           </Button>
-          <Button variant="ghost" size="xs" onClick={() => console.log('Dhikr reminder')}>
+          <Button variant="ghost" size="xs" onClick={() => console.log('Dhikr reminder')} className="rounded-lg">
             Dhikr Reminders
           </Button>
-          <Button variant="ghost" size="xs" onClick={() => console.log('Prayer guidance')}>
+          <Button variant="ghost" size="xs" onClick={() => console.log('Prayer guidance')} className="rounded-lg">
             Prayer Guidance
           </Button>
         </div>

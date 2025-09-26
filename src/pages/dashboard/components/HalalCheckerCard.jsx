@@ -64,10 +64,10 @@ const HalalCheckerCard = () => {
   };
 
   return (
-    <div className="bg-card rounded-xl p-6 shadow-islamic-moderate border border-border">
+    <div className="bg-card rounded-2xl p-6 shadow-islamic-moderate border border-border">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-success rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-success rounded-xl flex items-center justify-center">
             <Icon name="Shield" size={20} className="text-success-foreground" />
           </div>
           <div>
@@ -88,7 +88,7 @@ const HalalCheckerCard = () => {
           variant="outline"
           size="sm"
           onClick={handleQuickScan}
-          className="flex flex-col items-center p-3 h-auto"
+          className="flex flex-col items-center p-3 h-auto rounded-xl"
         >
           <Icon name="Camera" size={20} className="mb-1" />
           <span className="text-xs">Barcode</span>
@@ -97,7 +97,7 @@ const HalalCheckerCard = () => {
           variant="outline"
           size="sm"
           onClick={handleQuickScan}
-          className="flex flex-col items-center p-3 h-auto"
+          className="flex flex-col items-center p-3 h-auto rounded-xl"
         >
           <Icon name="Type" size={20} className="mb-1" />
           <span className="text-xs">Text Input</span>
@@ -106,7 +106,7 @@ const HalalCheckerCard = () => {
           variant="outline"
           size="sm"
           onClick={handleQuickScan}
-          className="flex flex-col items-center p-3 h-auto"
+          className="flex flex-col items-center p-3 h-auto rounded-xl"
         >
           <Icon name="Image" size={20} className="mb-1" />
           <span className="text-xs">Photo</span>
@@ -118,7 +118,7 @@ const HalalCheckerCard = () => {
         {scanHistory?.slice(0, 3)?.map((scan) => (
           <div
             key={scan?.id}
-            className="flex items-center justify-between p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+            className="flex items-center justify-between p-3 bg-muted/30 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer"
             onClick={() => console.log('View scan details', scan?.id)}
           >
             <div className="flex items-center space-x-3">
@@ -145,7 +145,7 @@ const HalalCheckerCard = () => {
       <div className="flex space-x-2">
         <Button
           variant="default"
-          className="flex-1"
+          className="flex-1 rounded-xl"
           onClick={handleNavigateToChecker}
           iconName="Search"
           iconPosition="left"
@@ -157,11 +157,12 @@ const HalalCheckerCard = () => {
           onClick={() => console.log('View history')}
           iconName="History"
           iconPosition="left"
+          className="rounded-xl"
         >
           History
         </Button>
       </div>
-      <div className="mt-4 p-3 bg-success/5 rounded-lg border border-success/10">
+      <div className="mt-4 p-3 bg-success/5 rounded-xl border border-success/10">
         <div className="flex items-center space-x-2 mb-2">
           <Icon name="BookOpen" size={16} className="text-success" />
           <span className="font-medium text-sm text-foreground">Islamic References</span>

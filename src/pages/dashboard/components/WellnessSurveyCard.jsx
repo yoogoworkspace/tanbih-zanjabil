@@ -84,10 +84,10 @@ const WellnessSurveyCard = () => {
   };
 
   return (
-    <div className="bg-card rounded-xl p-6 shadow-islamic-moderate border border-border">
+    <div className="bg-card rounded-2xl p-6 shadow-islamic-moderate border border-border">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center">
             <Icon name="Heart" size={20} className="text-secondary-foreground" />
           </div>
           <div>
@@ -105,14 +105,14 @@ const WellnessSurveyCard = () => {
       {/* Wellness Metrics */}
       <div className="grid grid-cols-3 gap-3 mb-4">
         {wellnessMetrics?.map((metric, index) => (
-          <div key={index} className="text-center p-3 bg-muted/20 rounded-lg">
+          <div key={index} className="text-center p-3 bg-muted/20 rounded-xl">
             <p className={`font-data text-lg font-bold ${metric?.color}`}>{metric?.value}</p>
             <p className="font-caption text-xs text-muted-foreground">{metric?.label}</p>
           </div>
         ))}
       </div>
       {/* Last Survey Info */}
-      <div className="bg-secondary/5 rounded-lg p-4 mb-4 border border-secondary/10">
+      <div className="bg-secondary/5 rounded-xl p-4 mb-4 border border-secondary/10">
         <div className="flex items-center justify-between mb-2">
           <h4 className="font-medium text-sm text-foreground">Last Survey</h4>
           <span className="text-xs text-muted-foreground">{lastSurvey?.date}</span>
@@ -134,7 +134,7 @@ const WellnessSurveyCard = () => {
         {recommendations?.slice(0, 2)?.map((rec) => (
           <div
             key={rec?.id}
-            className="flex items-start space-x-3 p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+            className="flex items-start space-x-3 p-3 bg-muted/30 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer"
             onClick={() => console.log('View recommendation', rec?.id)}
           >
             <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
@@ -155,7 +155,7 @@ const WellnessSurveyCard = () => {
       <div className="flex space-x-2">
         <Button
           variant="default"
-          className="flex-1"
+          className="flex-1 rounded-xl"
           onClick={handleTakeSurvey}
           iconName="ClipboardList"
           iconPosition="left"
@@ -167,11 +167,12 @@ const WellnessSurveyCard = () => {
           onClick={handleNavigateToSurvey}
           iconName="TrendingUp"
           iconPosition="left"
+          className="rounded-xl"
         >
           View Insights
         </Button>
       </div>
-      <div className="mt-4 p-3 bg-accent/5 rounded-lg border border-accent/10">
+      <div className="mt-4 p-3 bg-accent/5 rounded-xl border border-accent/10">
         <div className="flex items-center space-x-2 mb-2">
           <Icon name="Brain" size={16} className="text-accent" />
           <span className="font-medium text-sm text-foreground">AI-Powered Analysis</span>

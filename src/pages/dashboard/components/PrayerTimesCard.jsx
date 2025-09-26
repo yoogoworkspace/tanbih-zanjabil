@@ -41,10 +41,10 @@ const PrayerTimesCard = () => {
   };
 
   return (
-    <div className="bg-card rounded-xl p-6 shadow-islamic-moderate border border-border">
+    <div className="bg-card rounded-2xl p-6 shadow-islamic-moderate border border-border">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
             <Icon name="Clock" size={20} className="text-primary-foreground" />
           </div>
           <div>
@@ -56,12 +56,13 @@ const PrayerTimesCard = () => {
           variant={notificationsEnabled ? "default" : "outline"}
           size="icon"
           onClick={toggleNotifications}
+          className="rounded-xl"
         >
           <Icon name={notificationsEnabled ? "Bell" : "BellOff"} size={16} />
         </Button>
       </div>
       {/* Current Time & Next Prayer */}
-      <div className="bg-primary/5 rounded-lg p-4 mb-4 border border-primary/10">
+      <div className="bg-primary/5 rounded-xl p-4 mb-4 border border-primary/10">
         <div className="flex items-center justify-between">
           <div>
             <p className="font-data text-2xl font-bold text-foreground">{formatTime(currentTime)}</p>
@@ -81,7 +82,7 @@ const PrayerTimesCard = () => {
         {prayerTimes?.map((prayer, index) => (
           <div
             key={index}
-            className={`flex items-center justify-between p-3 rounded-lg transition-all ${
+            className={`flex items-center justify-between p-3 rounded-xl transition-all ${
               prayer?.status === 'upcoming' ?'bg-warning/10 border border-warning/20' 
                 : prayer?.status === 'completed' ?'bg-success/10 border border-success/20' :'bg-muted/30 border border-border'
             }`}
@@ -114,7 +115,7 @@ const PrayerTimesCard = () => {
       <div className="flex space-x-2">
         <Button
           variant="default"
-          className="flex-1"
+          className="flex-1 rounded-xl"
           onClick={handleNavigateToScheduler}
           iconName="Calendar"
           iconPosition="left"
@@ -126,6 +127,7 @@ const PrayerTimesCard = () => {
           onClick={() => console.log('Qibla direction')}
           iconName="Compass"
           iconPosition="left"
+          className="rounded-xl"
         >
           Qibla
         </Button>

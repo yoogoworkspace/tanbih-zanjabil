@@ -48,10 +48,10 @@ const ARSalahGuideCard = () => {
   };
 
   return (
-    <div className="bg-card rounded-xl p-6 shadow-islamic-moderate border border-border">
+    <div className="bg-card rounded-2xl p-6 shadow-islamic-moderate border border-border">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center">
             <Icon name="Eye" size={20} className="text-accent-foreground" />
           </div>
           <div>
@@ -69,7 +69,7 @@ const ARSalahGuideCard = () => {
         </div>
       </div>
       {/* Last Session Summary */}
-      <div className="bg-accent/5 rounded-lg p-4 mb-4 border border-accent/10">
+      <div className="bg-accent/5 rounded-xl p-4 mb-4 border border-accent/10">
         <div className="flex items-center justify-between mb-2">
           <h4 className="font-medium text-sm text-foreground">Last Session</h4>
           <span className="text-xs text-muted-foreground">{lastSession?.date}</span>
@@ -91,7 +91,7 @@ const ARSalahGuideCard = () => {
       <div className="space-y-2 mb-4">
         <h4 className="font-medium text-sm text-foreground">Posture Analysis</h4>
         {postureStats?.map((posture, index) => (
-          <div key={index} className="flex items-center justify-between p-2 bg-muted/20 rounded-lg">
+          <div key={index} className="flex items-center justify-between p-2 bg-muted/20 rounded-xl">
             <div className="flex items-center space-x-3">
               <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center">
                 <span className="text-xs font-medium text-primary">{posture?.name?.[0]}</span>
@@ -127,7 +127,7 @@ const ARSalahGuideCard = () => {
       <div className="flex space-x-2">
         <Button
           variant="default"
-          className="flex-1"
+          className="flex-1 rounded-xl"
           onClick={handleStartSession}
           iconName="Play"
           iconPosition="left"
@@ -140,11 +140,12 @@ const ARSalahGuideCard = () => {
           onClick={handleNavigateToGuide}
           iconName="Settings"
           iconPosition="left"
+          className="rounded-xl"
         >
           Guide
         </Button>
       </div>
-      <div className="mt-4 p-3 bg-primary/5 rounded-lg border border-primary/10">
+      <div className="mt-4 p-3 bg-primary/5 rounded-xl border border-primary/10">
         <div className="flex items-center space-x-2 mb-2">
           <Icon name="Shield" size={16} className="text-primary" />
           <span className="font-medium text-sm text-foreground">Privacy Protected</span>

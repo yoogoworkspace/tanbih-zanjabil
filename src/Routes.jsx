@@ -12,6 +12,7 @@ import Dashboard from './pages/dashboard';
 import WellnessSurvey from './pages/wellness-survey';
 import ARSalahGuide from './pages/ar-salah-guide';
 import ProfileSettings from './pages/profile-settings';
+import ProtectedRoute from "components/ProtectedRoute";
 
 const Routes = () => {
   return (
@@ -25,13 +26,13 @@ const Routes = () => {
           <Route path="/signup" element={<Signup />} />
           
           {/* Main App Routes - Accessible in Preview Mode */}
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/prayer-times-scheduler" element={<PrayerTimesScheduler />} />
-          <Route path="/halal-checker" element={<HalalChecker />} />
-          <Route path="/wellness-survey" element={<WellnessSurvey />} />
-          <Route path="/ar-salah-guide" element={<ARSalahGuide />} />
-          <Route path="/profile-settings" element={<ProfileSettings />} />
+          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/prayer-times-scheduler" element={<ProtectedRoute><PrayerTimesScheduler /></ProtectedRoute>} />
+          <Route path="/halal-checker" element={<ProtectedRoute><HalalChecker /></ProtectedRoute>} />
+          <Route path="/wellness-survey" element={<ProtectedRoute><WellnessSurvey /></ProtectedRoute>} />
+          <Route path="/ar-salah-guide" element={<ProtectedRoute><ARSalahGuide /></ProtectedRoute>} />
+          <Route path="/profile-settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </RouterRoutes>
         </ErrorBoundary>
