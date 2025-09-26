@@ -16,7 +16,8 @@ import {
   User,
   LogIn,
   ClipboardCheck,
-  Sparkles
+  Sparkles,
+  History
 } from 'lucide-react';
 import Icon from '../AppIcon';
 
@@ -39,10 +40,10 @@ const Header = ({ isMenuOpen, setIsMenuOpen }) => {
     { path: '/dashboard', icon: Home, label: 'Dashboard' },
     { path: '/ai-sheikh', icon: Sparkles, label: 'AI Sheikh' },
     { path: '/deeds-tracking', icon: ClipboardCheck, label: 'Deeds' },
+    { path: '/qada-tracker', icon: History, label: 'Qada' },
     { path: '/prayer-times-scheduler', icon: Calendar, label: 'Prayer Times' },
     { path: '/halal-checker', icon: Search, label: 'Halal Checker' },
     { path: '/wellness-survey', icon: Heart, label: 'Wellness' },
-    { path: '/ar-salah-guide', icon: Camera, label: 'AR Guide' },
     { path: '/profile-settings', icon: Settings, label: 'Settings' },
   ];
 

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../lib/supabaseClient';
 import Header from '../../components/ui/Header';
 import PersonalInfoSection from './components/PersonalInfoSection';
 import IslamicPreferencesSection from './components/IslamicPreferencesSection';
@@ -9,123 +11,59 @@ import Button from '../../components/ui/Button';
 import Icon from '../../components/AppIcon';
 
 const ProfileSettings = () => {
+  const { user, userProfile, loading: authLoading, updateProfile } = useAuth();
   const [activeTab, setActiveTab] = useState('personal');
-  const [userInfo, setUserInfo] = useState({
-    name: "Ahmed Hassan",
-    email: "ahmed.hassan@email.com",
-    city: "dubai",
-    phone: "+971 50 123 4567"
-  });
+  const [userInfo, setUserInfo] = useState(null);
+  const [notificationSettings, setNotificationSettings] = useState(null);
 
-  const [islamicPreferences, setIslamicPreferences] = useState({
-    madhab: "hanafi",
-    calculationMethod: "mwl",
-    reciter: "mishary",
-    showArabicText: true,
-    showTransliteration: true,
-    showIslamicCalendar: true,
-    use24HourFormat: false,
-    personalizedAI: true,
-    contextualReminders: true
-  });
-
-  const [notificationSettings, setNotificationSettings] = useState({
-    prayers: {
-      fajr: true,
-      dhuhr: true,
-      asr: true,
-      maghrib: true,
-      isha: true,
-      jumah: true,
-      reminderTime: "15"
-    },
-    sunnah: {
-      rawatib: true,
-      tahajjud: false,
-      duha: true,
-      tarawih: true
-    },
-    dhikr: {
-      morning: true,
-      evening: true,
-      sleep: true,
-      wakeup: true,
-      frequency: "daily"
-    },
-    special: {
-      laylatAlQadr: true,
-      islamicHolidays: true,
-      ramadan: true,
-      hajj: true
+  useEffect(() => {
+    if (userProfile) {
+      setUserInfo({
+        name: userProfile.full_name,
+        email: userProfile.email,
+        city: userProfile.location,
+        phone: userProfile.phone,
+      });
+      setNotificationSettings(userProfile.notification_preferences);
     }
-  });
-
-  const [privacySettings, setPrivacySettings] = useState({
-    saveChatHistory: true,
-    storeSurveyData: true,
-    saveHalalHistory: true,
-    prayerAnalytics: true,
-    twoFactorEnabled: false
-  });
-
-  const [connectedAccounts, setConnectedAccounts] = useState({
-    google: true,
-    apple: false,
-    facebook: false
-  });
+  }, [userProfile]);
 
   const tabs = [
     { id: 'personal', label: 'Personal Info', icon: 'User' },
-    { id: 'islamic', label: 'Islamic Preferences', icon: 'BookOpen' },
     { id: 'notifications', label: 'Notifications', icon: 'Bell' },
     { id: 'privacy', label: 'Privacy & Security', icon: 'Shield' },
-    { id: 'accounts', label: 'Connected Accounts', icon: 'Link' }
   ];
 
   useEffect(() => {
-    // Scroll to top when component mounts
     window.scrollTo(0, 0);
   }, []);
 
-  const handleUserInfoUpdate = (updatedInfo) => {
+  const handleUserInfoUpdate = async (updatedInfo) => {
+    await updateProfile({
+      full_name: updatedInfo.name,
+      location: updatedInfo.city,
+      phone: updatedInfo.phone,
+    });
     setUserInfo(updatedInfo);
   };
 
-  const handleIslamicPreferencesUpdate = (updatedPreferences) => {
-    setIslamicPreferences(updatedPreferences);
-  };
-
-  const handleNotificationUpdate = (updatedNotifications) => {
+  const handleNotificationUpdate = async (updatedNotifications) => {
+    await updateProfile({ notification_preferences: updatedNotifications });
     setNotificationSettings(updatedNotifications);
-  };
-
-  const handlePrivacyUpdate = (updatedPrivacy) => {
-    setPrivacySettings(updatedPrivacy);
-  };
-
-  const handleConnectedAccountsUpdate = (updatedAccounts) => {
-    setConnectedAccounts(updatedAccounts);
   };
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'personal':
         return (
-          <PersonalInfoSection
+          userInfo && <PersonalInfoSection
             userInfo={userInfo}
             onUpdate={handleUserInfoUpdate}
           />
         );
-      case 'islamic':
-        return (
-          <IslamicPreferencesSection
-            preferences={islamicPreferences}
-            onUpdate={handleIslamicPreferencesUpdate}
-          />
-        );
       case 'notifications':
         return (
-          <NotificationSettings
+          notificationSettings && <NotificationSettings
             notifications={notificationSettings}
             onUpdate={handleNotificationUpdate}
           />
@@ -133,15 +71,8 @@ const ProfileSettings = () => {
       case 'privacy':
         return (
           <PrivacySecuritySection
-            privacy={privacySettings}
-            onUpdate={handlePrivacyUpdate}
-          />
-        );
-      case 'accounts':
-        return (
-          <ConnectedAccountsSection
-            connectedAccounts={connectedAccounts}
-            onUpdate={handleConnectedAccountsUpdate}
+            privacy={{}}
+            onUpdate={() => {}}
           />
         );
       default:

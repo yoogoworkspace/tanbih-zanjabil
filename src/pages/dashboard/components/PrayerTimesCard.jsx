@@ -4,8 +4,10 @@ import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 import axios from 'axios';
 import { format, differenceInMilliseconds, addMinutes } from 'date-fns';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const PrayerTimesCard = () => {
+  const { userProfile } = useAuth();
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [prayerTimes, setPrayerTimes] = useState([]);
@@ -27,12 +29,14 @@ const PrayerTimesCard = () => {
     }, 1000);
 
     const fetchPrayerTimes = async () => {
+      if (!userProfile) return;
       setLoading(true);
       try {
+        const [city, country] = userProfile.location ? userProfile.location.split(',').map(s => s.trim()) : ['London', 'UK'];
         const response = await axios.get('https://api.aladhan.com/v1/timingsByCity', {
           params: {
-            city: 'London',
-            country: 'United Kingdom',
+            city,
+            country,
             method: 2 // ISNA
           }
         });
@@ -56,7 +60,7 @@ const PrayerTimesCard = () => {
     fetchPrayerTimes();
 
     return () => clearInterval(timer);
-  }, []);
+  }, [userProfile]);
 
   useEffect(() => {
     if (prayerTimes.length > 0) {

@@ -14,6 +14,8 @@ import ARSalahGuide from './pages/ar-salah-guide';
 import ProfileSettings from './pages/profile-settings';
 import DeedsTracking from './pages/deeds-tracking';
 import AISheikh from './pages/ai-sheikh';
+import DhikrCounter from './pages/dhikr-counter';
+import QadaTracker from './pages/qada-tracker';
 import ProtectedRoute from "components/ProtectedRoute";
 
 const Routes = () => {
@@ -37,6 +39,8 @@ const Routes = () => {
           <Route path="/profile-settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
           <Route path="/deeds-tracking" element={<ProtectedRoute><DeedsTracking /></ProtectedRoute>} />
           <Route path="/ai-sheikh" element={<ProtectedRoute><AISheikh /></ProtectedRoute>} />
+          <Route path="/dhikr-counter" element={<ProtectedRoute><DhikrCounter /></ProtectedRoute>} />
+          <Route path="/qada-tracker" element={<ProtectedRoute><QadaTracker /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </RouterRoutes>
         </ErrorBoundary>

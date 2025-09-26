@@ -1,40 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
+import { useAuth } from '../../../contexts/AuthContext';
+import { supabase } from '../../../lib/supabaseClient';
+import { formatDistanceToNow } from 'date-fns';
 
 const HalalCheckerCard = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const [scanHistory] = useState([
-    {
-      id: 1,
-      productName: "Organic Chicken Breast",
-      status: "halal",
-      timestamp: "2 hours ago",
-      confidence: 95
-    },
-    {
-      id: 2,
-      productName: "Mixed Vegetable Soup",
-      status: "halal",
-      timestamp: "Yesterday",
-      confidence: 88
-    },
-    {
-      id: 3,
-      productName: "Beef Jerky Snack",
-      status: "questionable",
-      timestamp: "2 days ago",
-      confidence: 65
-    }
-  ]);
+  const [scanHistory, setScanHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchScanHistory = async () => {
+      if (!user) return;
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('halal_products')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(3);
+
+        if (error) throw error;
+        setScanHistory(data || []);
+      } catch (error) {
+        console.error("Error fetching scan history:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchScanHistory();
+  }, [user]);
 
   const handleNavigateToChecker = () => {
     navigate('/halal-checker');
   };
 
   const handleQuickScan = () => {
-    console.log('Starting quick scan');
+    navigate('/halal-checker');
   };
 
   const getStatusColor = (status) => {
@@ -115,32 +122,38 @@ const HalalCheckerCard = () => {
       {/* Recent Scans */}
       <div className="space-y-3 mb-4">
         <h4 className="font-medium text-sm text-foreground">Recent Scans</h4>
-        {scanHistory?.slice(0, 3)?.map((scan) => (
-          <div
-            key={scan?.id}
-            className="flex items-center justify-between p-3 bg-muted/30 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer"
-            onClick={() => console.log('View scan details', scan?.id)}
-          >
-            <div className="flex items-center space-x-3">
-              <Icon 
-                name={getStatusIcon(scan?.status)} 
-                size={16} 
-                className={scan?.status === 'halal' ? 'text-success' : 
-                          scan?.status === 'haram' ? 'text-error' : 'text-warning'} 
-              />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-foreground truncate">{scan?.productName}</p>
-                <p className="text-xs text-muted-foreground">{scan?.timestamp}</p>
+        {loading ? (
+          <div className="text-center py-4"><p className="text-sm text-muted-foreground">Loading history...</p></div>
+        ) : scanHistory.length > 0 ? (
+          scanHistory.map((scan) => (
+            <div
+              key={scan.id}
+              className="flex items-center justify-between p-3 bg-muted/30 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer"
+              onClick={() => console.log('View scan details', scan.id)}
+            >
+              <div className="flex items-center space-x-3">
+                <Icon
+                  name={getStatusIcon(scan.is_halal === true ? 'halal' : scan.is_halal === false ? 'haram' : 'questionable')}
+                  size={16}
+                  className={getStatusColor(scan.is_halal === true ? 'halal' : scan.is_halal === false ? 'haram' : 'questionable').split(' ')[0]}
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-foreground truncate">{scan.product_name}</p>
+                  <p className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(scan.created_at), { addSuffix: true })}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(scan.is_halal === true ? 'halal' : scan.is_halal === false ? 'haram' : 'questionable')}`}>
+                  {scan.is_halal === true ? 'Halal' : scan.is_halal === false ? 'Haram' : 'Questionable'}
+                </span>
               </div>
             </div>
-            <div className="text-right">
-              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(scan?.status)}`}>
-                {scan?.status}
-              </span>
-              <p className="text-xs text-muted-foreground mt-1">{scan?.confidence}% confidence</p>
-            </div>
+          ))
+        ) : (
+          <div className="text-center py-4">
+            <p className="text-sm text-muted-foreground">No scans yet.</p>
           </div>
-        ))}
+        )}
       </div>
       <div className="flex space-x-2">
         <Button
@@ -154,7 +167,7 @@ const HalalCheckerCard = () => {
         </Button>
         <Button
           variant="outline"
-          onClick={() => console.log('View history')}
+          onClick={handleNavigateToChecker}
           iconName="History"
           iconPosition="left"
           className="rounded-xl"

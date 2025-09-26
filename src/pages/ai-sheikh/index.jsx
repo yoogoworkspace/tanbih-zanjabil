@@ -42,7 +42,7 @@ const AISheikh = () => {
       const response = await axios.post(
         'https://openrouter.ai/api/v1/chat/completions',
         {
-          model: 'openai/gpt-3.5-turbo', // using a faster model for now
+          model: 'openai/gpt-oss-120b:free',
           messages: [...messages, userMessage],
         },
         {

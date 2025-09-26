@@ -2,12 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
+import { useAuth } from '../../../contexts/AuthContext';
+import { supabase } from '../../../lib/supabaseClient';
+import { useNavigate } from 'react-router-dom';
 
 const IslamicContentPanel = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [islamicDate, setIslamicDate] = useState('15 Rabi\' al-Awwal 1446');
   const [dailyVerse, setDailyVerse] = useState(null);
   const [featuredHadith, setFeaturedHadith] = useState(null);
+  const [dhikrReminders, setDhikrReminders] = useState([]);
   const [loadingVerse, setLoadingVerse] = useState(true);
   const [loadingHadith, setLoadingHadith] = useState(true);
 
@@ -60,15 +66,15 @@ const IslamicContentPanel = () => {
       setLoadingHadith(true);
       try {
         const apiKey = import.meta.env.VITE_HADITH_API_KEY;
-        const booksResponse = await axios.get(`https://hadithapi.com/api/books?apiKey=${apiKey}`);
+        const booksResponse = await axios.get('https://hadithapi.com/api/books', { params: { apiKey } });
         const books = booksResponse.data.books;
         const randomBook = books[Math.floor(Math.random() * books.length)];
 
-        const chaptersResponse = await axios.get(`https://hadithapi.com/api/chapters/${randomBook.bookSlug}?apiKey=${apiKey}`);
+        const chaptersResponse = await axios.get(`https://hadithapi.com/api/chapters/${randomBook.bookSlug}`, { params: { apiKey } });
         const chapters = chaptersResponse.data.chapters;
         const randomChapter = chapters[Math.floor(Math.random() * chapters.length)];
 
-        const hadithsResponse = await axios.get(`https://hadithapi.com/api/hadiths?apiKey=${apiKey}&book=${randomBook.bookSlug}&chapter=${randomChapter.chapterNumber}`);
+        const hadithsResponse = await axios.get('https://hadithapi.com/api/hadiths', { params: { apiKey, book: randomBook.bookSlug, chapter: randomChapter.chapterNumber } });
         const hadiths = hadithsResponse.data.hadiths;
         const randomHadith = hadiths[Math.floor(Math.random() * hadiths.length)];
 
@@ -84,11 +90,28 @@ const IslamicContentPanel = () => {
       }
     };
 
+    const fetchDhikrReminders = async () => {
+      if (!user) return;
+      try {
+        const { data, error } = await supabase
+          .from('ai_recommendations')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('category', 'dhikr')
+          .limit(3);
+        if (error) throw error;
+        setDhikrReminders(data || []);
+      } catch (error) {
+        console.error("Error fetching dhikr reminders:", error);
+      }
+    };
+
     fetchRandomVerse();
     fetchRandomHadith();
+    fetchDhikrReminders();
 
     return () => clearInterval(timer);
-  }, []);
+  }, [user]);
 
   const formatDate = (date) => {
     return date?.toLocaleDateString('en-US', {
@@ -191,6 +214,37 @@ const IslamicContentPanel = () => {
             <div className="text-center py-4"><p className="text-sm text-muted-foreground">Could not load hadith.</p></div>
           )}
         </div>
+      </div>
+      {/* Dhikr Reminders */}
+      <div className="bg-card rounded-xl p-6 shadow-islamic-moderate border border-border">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="w-10 h-10 bg-success rounded-lg flex items-center justify-center">
+            <Icon name="Repeat" size={20} className="text-success-foreground" />
+          </div>
+          <div>
+            <h3 className="font-heading font-semibold text-lg text-foreground">Dhikr Reminders</h3>
+            <p className="font-caption text-sm text-muted-foreground">Daily Remembrance</p>
+          </div>
+        </div>
+        <div className="space-y-3">
+          {dhikrReminders.length > 0 ? (
+            dhikrReminders.map((dhikr) => (
+              <div key={dhikr.id} className="flex items-center justify-between p-3 bg-success/5 rounded-lg border border-success/10">
+                <div>
+                  <p className="font-medium text-sm text-foreground">{dhikr.title}</p>
+                  <p className="text-xs text-muted-foreground">{dhikr.content}</p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-sm text-muted-foreground">No dhikr reminders available.</p>
+            </div>
+          )}
+        </div>
+        <Button variant="outline" className="w-full mt-4" iconName="Play" iconPosition="left" onClick={() => navigate('/dhikr-counter')}>
+          Start Dhikr Session
+        </Button>
       </div>
     </div>
   );

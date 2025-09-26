@@ -5,7 +5,6 @@ import Header from '../../components/ui/Header';
 import AICompanionCard from './components/AICompanionCard';
 import PrayerTimesCard from './components/PrayerTimesCard';
 import HalalCheckerCard from './components/HalalCheckerCard';
-import ARSalahGuideCard from './components/ARSalahGuideCard';
 import WellnessSurveyCard from './components/WellnessSurveyCard';
 import IslamicContentPanel from './components/IslamicContentPanel';
 import Icon from '../../components/AppIcon';
@@ -126,7 +125,7 @@ const Dashboard = () => {
       name: 'Emergency Dua',
       icon: 'Heart',
       color: 'bg-error text-error-foreground',
-      action: () => console.log('Emergency dua support')
+      action: () => navigate('/ai-sheikh')
     },
     {
       id: 2,
@@ -147,7 +146,7 @@ const Dashboard = () => {
       name: 'Dhikr Counter',
       icon: 'Repeat',
       color: 'bg-accent text-accent-foreground',
-      action: () => console.log('Start dhikr counter')
+      action: () => navigate('/dhikr-counter')
     }
   ];
 
@@ -238,11 +237,8 @@ const Dashboard = () => {
                   <PrayerTimesCard />
                 </div>
 
-                {/* Halal Checker & AR Guide Row */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <HalalCheckerCard />
-                  <ARSalahGuideCard />
-                </div>
+                {/* Halal Checker */}
+                <HalalCheckerCard />
 
                 {/* Wellness Survey Full Width */}
                 <WellnessSurveyCard />

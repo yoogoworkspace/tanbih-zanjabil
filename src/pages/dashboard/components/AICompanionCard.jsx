@@ -34,8 +34,7 @@ const AICompanionCard = () => {
   };
 
   const handleStartChat = () => {
-    // Navigate to AI chat interface
-    console.log('Starting AI chat session');
+    navigate('/ai-sheikh');
   };
 
   return (
@@ -96,7 +95,7 @@ const AICompanionCard = () => {
         </Button>
         <Button
           variant="outline"
-          onClick={() => console.log('Emergency support')}
+          onClick={handleStartChat}
           iconName="Heart"
           iconPosition="left"
           className="rounded-xl"
@@ -110,13 +109,13 @@ const AICompanionCard = () => {
           <span className="font-medium text-sm text-foreground">Quick Actions</span>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="ghost" size="xs" onClick={() => console.log('Stress relief')} className="rounded-lg">
+          <Button variant="ghost" size="xs" onClick={handleStartChat} className="rounded-lg">
             Stress Relief Duas
           </Button>
-          <Button variant="ghost" size="xs" onClick={() => console.log('Dhikr reminder')} className="rounded-lg">
+          <Button variant="ghost" size="xs" onClick={handleStartChat} className="rounded-lg">
             Dhikr Reminders
           </Button>
-          <Button variant="ghost" size="xs" onClick={() => console.log('Prayer guidance')} className="rounded-lg">
+          <Button variant="ghost" size="xs" onClick={handleStartChat} className="rounded-lg">
             Prayer Guidance
           </Button>
         </div>
